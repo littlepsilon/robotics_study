@@ -59,3 +59,24 @@ def adjoint_transform(T):
     top = np.hstack((R, np.zeros((3,3))))
     bottom = np.hstack((p_skew @ R, R))
     return np.vstack((top, bottom))
+
+def invert_transformation(T):
+    R = T[:3, :3]
+    p = T[:3, 3]
+    R_inv = R.T
+    p_inv = -np.dot(R_inv, p)
+    T_inv = np.eye(4)
+    T_inv[:3, :3] = R_inv
+    T_inv[:3, 3] = p_inv
+    return T_inv
+
+def extract_screw_from_logm(logm_result):
+    w = np.array([
+        logm_result[2, 1],
+        logm_result[0, 2],
+        logm_result[1, 0]
+    ])
+
+    v = logm_result[:3, 3]
+    
+    return w, v
